@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writer Type Popup - Fixed</title>
+</head>
+<body>
+    <!-- Demo button to show popup -->
+    <button onclick="showPopup()" style="position: fixed; top: 20px; left: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Show Popup</button>
+
+    <div class="writer-type-popup-overlay" id="writerTypePopupOverlay" style="display: none;">
+        <div class="writer-type-popup">
+            <button class="writer-type-close-button" id="writerTypeCloseButton">×</button>
+            
+            <div class="writer-type-popup-header">
+                <h2 class="writer-type-popup-title">¿Qué tipo de escritor eres?</h2>
+                <p class="writer-type-popup-subtitle">Descubre tu camino y empieza hoy.</p>
+            </div>
+
+            <div class="writer-type-options-container">
+                <div class="writer-type-option writer-type-option-left">
+                    <div class="writer-type-option-icon">📝</div>
+                    <div class="writer-type-option-content">
+                        <h3 class="writer-type-option-title">Quiero unirme al reto, escribir y publicar</h3>
+                        <p class="writer-type-option-description">Participa en nuestros desafíos diarios, conecta con objetivos claros y forma parte de una comunidad que te impulsa a mejorar y publicar.</p>
+                    </div>
+                    <button class="writer-type-option-button">UNIRME AL RETO</button>
+                </div>
+
+                <div class="writer-type-option writer-type-option-right">
+                    <div class="writer-type-option-icon">📚</div>
+                    <div class="writer-type-option-content">
+                        <h3 class="writer-type-option-title">Quiero mejorar mi escritura con una guía gratuita</h3>
+                        <p class="writer-type-option-description">Aprende técnicas clave con una lectura clara, práctica e inspiradora. Descarga el ebook y empieza por tu cuenta, a tu ritmo.</p>
+                    </div>
+                    <button class="writer-type-option-button" id="downloadGuideBtn">DESCARGAR LA GUÍA</button>
+                </div>
+            </div>
+
+            <div class="writer-type-popup-footer">
+                <p>Elijas lo que elijas, mejorarás tu escritura. Tú decides cómo empezar</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Writer Type Popup Styles */
+        .writer-type-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99997;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+
+        .writer-type-popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .writer-type-popup {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            margin: 0 auto;
+            padding: 32px 24px 24px;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .writer-type-popup-overlay.show .writer-type-popup {
+            transform: scale(1) translateY(0);
+        }
+
+        .writer-type-close-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            z-index: 99998;
+        }
+
+        .writer-type-close-button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .writer-type-popup-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .writer-type-popup-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .writer-type-popup-subtitle {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .writer-type-options-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .writer-type-option {
+            flex: 1;
+            padding: 24px 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .writer-type-option:hover {
+            transform: translateY(-2px);
+        }
+
+        .writer-type-option-left {
+            background-color: #ff6b6b;
+        }
+
+        .writer-type-option-right {
+            background-color: #b8e6e1;
+            color: #1a5d5a;
+        }
+
+        .writer-type-option-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .writer-type-option-right .writer-type-option-icon {
+            background: rgba(26, 93, 90, 0.1);
+        }
+
+        .writer-type-option-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .writer-type-option-title {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .writer-type-option-description {
+            font-size: 14px;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        .writer-type-option-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: inherit;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .writer-type-option-right .writer-type-option-button {
+            background: #1a5d5a;
+            color: white;
+        }
+
+        .writer-type-option-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .writer-type-option-right .writer-type-option-button:hover {
+            background: #144b48;
+        }
+
+        .writer-type-popup-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 640px) {
+            .writer-type-popup-overlay {
+                min-height:auto !important;
+                padding-bottom: 0 !important;
+                margin: 0 auto;
+                padding: 16px;
+                align-items: flex-start;
+                padding-top: 40px;
+            }
+            
+            .writer-type-popup {
+                max-height: calc(100vh - 80px);
+                padding: 24px 20px 20px;
+                margin: 0;
+            }
+            
+            .writer-type-options-container {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            
+            .writer-type-option {
+                padding: 20px 16px;
+                gap: 12px;
+            }
+            
+            .writer-type-option-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            
+            .writer-type-popup-title {
+                font-size: 20px;
+            }
+            
+            .writer-type-popup-subtitle {
+                font-size: 15px;
+            }
+            
+            .writer-type-option-title {
+                font-size: 16px;
+            }
+            
+            .writer-type-option-description {
+                font-size: 13px;
+                line-height: 1.3;
+            }
+            
+            .writer-type-option-button {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+            
+            .writer-type-popup-footer {
+                font-size: 13px;
+            }
+        }
+
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            .writer-type-popup-overlay {
+                min-height:auto !important;
+                padding-bottom: 0 !important;
+                margin: 0 auto;
+                padding: 12px;
+                padding-top: 30px;
+            }
+            
+            .writer-type-popup {
+                max-height: calc(100vh - 60px);
+                padding: 20px 16px 16px;
+            }
+            
+            .writer-type-popup-header {
+                margin-bottom: 20px;
+            }
+            
+            .writer-type-popup-title {
+                font-size: 18px;
+            }
+            
+            .writer-type-popup-subtitle {
+                font-size: 14px;
+            }
+            
+            .writer-type-option {
+                padding: 16px 12px;
+                gap: 10px;
+            }
+            
+            .writer-type-option-title {
+                font-size: 15px;
+            }
+            
+            .writer-type-option-description {
+                font-size: 12px;
+            }
+        }
+
+        /* Landscape mobile orientation */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .writer-type-popup-overlay {
+                margin: 0 auto;
+                align-items: center;
+                padding: 10px;
+            }
+            
+            .writer-type-popup {
+                max-height: 95vh;
+                padding: 20px 16px 16px;
+            }
+            
+            .writer-type-popup-header {
+                margin-bottom: 16px;
+            }
+            
+            .writer-type-options-container {
+                margin-bottom: 12px;
+            }
+            
+            .writer-type-option {
+                padding: 12px;
+                gap: 8px;
+            }
+            
+            .writer-type-option-description {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        function showPopup() {
+            const overlay = document.getElementById('writerTypePopupOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.classList.add('show');
+            }, 10);
+        }
+
+        function closePopup() {
+            const overlay = document.getElementById('writerTypePopupOverlay');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 400);
+        }
+
+        // Close popup functionality
+        document.getElementById('writerTypeCloseButton').addEventListener('click', closePopup);
+
+        // Close popup when clicking outside
+        document.getElementById('writerTypePopupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+
+        // Button click handlers
+        document.querySelector('.writer-type-option-left .writer-type-option-button').addEventListener('click', function() {
+            // Replace with your actual route
+            window.location.href = '#challenge-route';
+        });
+
+        document.getElementById('downloadGuideBtn').addEventListener('click', function() {
+            // Replace with your actual download logic
+            alert('Descargando guía...');
+        });
+    </script>
+</body>
+</html>
